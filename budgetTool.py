@@ -6,6 +6,7 @@ basicBills = {
     "council tax": 0,
     "water": 0,
     "internet": 0,
+    "food": 0,
 }
 
 separator = ", "
@@ -32,7 +33,7 @@ while loop == True:
     basicBills[billKey.lower()] = billCost
     print("Now your " + str(billKey.lower()) + " costs £" + str(billCost) + " per month!")
 
-    print("Would you like to add another cost?")
+    print("Would you like to add another cost? Yes or no.")
     userDecision = input()
     if userDecision.lower() == "yes" or userDecision.lower() == "y":
         loop = True
@@ -40,7 +41,29 @@ while loop == True:
         loop = False
 
 
-# if breakdownDecision.lower == "yes" or breakdownDecision.lower == "y":
+print("Would you like to see the breakdown of your expenses?")
+breakdownDecision = input()
+
+totalCosts = 0
+
+for x in basicBills:
+    totalCosts += int(basicBills[x])
+
+if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
+    print("*****************************************")
+    print("        BUDGET BREAKDOWN (monthly)")
+    print("")
+    print("Income: £" + str(monthlyIncome))
+    print("")
+    print("Household bills")
+    for x, y in basicBills.items():
+        print(str(x.title()) + ": £" + str(y))
+    print("")
+    print("Total monthly costs: £" + str(totalCosts))
+    print("Disposable monthly income: £" + str(monthlyIncome - totalCosts))
+else:
+    print("Thanks for stopping by!")
+
 
 
 # Need a expenses dictionary. One can be neccessities and the other can be non-n
