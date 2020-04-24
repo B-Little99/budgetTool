@@ -1,4 +1,4 @@
-basicBills = {
+householdBills = {
     "rent": 0,
     "mortgage": 0,
     "electricity": 0,
@@ -33,12 +33,23 @@ annualBills = {
     "tv license": 0,
 }
 
-
-
 def stringBills(dictionary):
     separator = ", "
     stringDictionaryBills = separator.join(dictionary)
     return str(stringDictionaryBills)
+
+def categoryCost(billDict):
+    cost = 0 
+    for x in billDict:
+        if isinstance(x, int) == True:
+            cost += int(billDict[x])
+        else:
+            cost += float(billDict[x])
+    return cost
+
+def totalCost(dict1, dict2, dict3, monthlyAnnualCost):
+    totalValue = categoryCost(dict1) + categoryCost(dict2) + categoryCost(dict3) + monthlyAnnualCost
+    return totalValue
 
 print("Welcome to this simple monthly budget tool! Let's start with your monthly post-tax income:")
 monthlyIncome = int(input())
@@ -47,9 +58,9 @@ print("There are several basic 'bills' we want to include by default. If you do 
 loop = True
 
 while loop == True:
-    print("Please write out one of the bills you would like to update from one of the following categories: " + stringBills(basicBills) + ".")
+    print("Please write out one of the bills you would like to update from one of the following: " + stringBills(householdBills) + ".")
     billKey = input()
-    if billKey.lower() in basicBills:
+    if billKey.lower() in householdBills:
         print("Please input the cost of your " + str(billKey.lower()) + " in GBP:")
         billCost = input()  
     else: 
@@ -57,7 +68,7 @@ while loop == True:
         loop = False
         break
 
-    basicBills[billKey.lower()] = billCost
+    householdBills[billKey.lower()] = billCost
     print("Now your " + str(billKey.lower()) + " costs £" + str(billCost) + " per month!")
 
     print("Would you like to add another cost? Yes or no.")
@@ -67,15 +78,7 @@ while loop == True:
     else:
         loop = False
 
-def totalCost(billDict):
-    cost = 0 
-    for x in billDict:
-        cost += int(billDict[x])
-    return cost
-
 categoriesLoop = True
-
-
 
 print("Would you like to add expenses in other categories?")
 userInput = input()
@@ -84,26 +87,38 @@ if userInput == "yes" or userInput == "y":
 else:
     categoriesLoop = False
 
-while categoriesLoop == True:
+def listCategoryBills(dictionary):
+    for x, y in dictionary.items():
+        print(str(x.title()) + ": £" + str(y))
+    print("Total : £" + str(categoryCost(dictionary)))
+    print("")
 
-    print("Please enter a category to continue: non-essential bills, travel bills, and annual bills.")
+yearlyMonthlyStatement = "per month!"
+
+
+while categoriesLoop == True:
+    categoryLoop = True
+
+    print("Please enter a category to continue: household bills, non-essential bills, travel bills, and annual bills.")
     categoryDecision = input()
 
 # If statement to convert cateogry decision to correct input.
     if categoryDecision.lower() == "non-essential bills" or categoryDecision.lower() == "non-essential"     or categoryDecision.lower() == "non essential" or categoryDecision.lower() == "non essential bills":
         categoryDecision = nonEssentials
-        categoryLoop = True
         categoryText = "non-essential"
     elif categoryDecision.lower() == "travel bills" or categoryDecision.lower() == "travel"                 or categoryDecision.lower() == "travel-bills" :
         categoryDecision = travelBills
-        categoryLoop = True
         categoryText = "travel"
     elif categoryDecision.lower() == "annual bills" or categoryDecision.lower() == "annual"                 or categoryDecision.lower() == "annual-bills":
         categoryDecision = annualBills
-        categoryLoop = True
         categoryText = "annual"
+        yearlyMonthlyStatement = " per year!"
+    elif categoryDecision.lower() == "household bills" or categoryDecision.lower() == "household"                 or categoryDecision.lower() == "household-bills":
+        categoryDecision = householdBills
+        categoryText = "household"
     else:
         categoryLoop = False
+        categoriesLoop = False
 
 # May need another loop here for individual cats
     # if categoryDecision != "":
@@ -119,32 +134,21 @@ while categoriesLoop == True:
             break
 
         categoryDecision[categoryKey.lower()] = costValue
-        print("Now your " + str(categoryKey.lower()) + " bills are £" + str(costValue) + " per month!")
 
-        print("Would you like to add another cost in " + str(categoryText) + " bills with categories of: " + stringBills(categoryDecision) + "? Yes or no.")
+        print("Now your " + str(categoryKey.lower()) + " bills are £" + str(costValue) + str(yearlyMonthlyStatement))
+
+        print("Would you like to add another cost in " + str(categoryText) + " bills? Yes or no.")
         userDecision = input()
         if userDecision.lower() == "yes" or userDecision.lower() == "y":
             categoryLoop = True
         else:
             categoryLoop = False
-            print("Please enter 'Yes' if you like to enter costs from a different category? (These are: non-essential bills, travel bills and annual bills)")
+            print("Please enter 'Yes' if you like to enter costs from a different category:")
             userInput = input()
             if userInput.lower() == "yes" or userInput.lower() == "y":
                 categoriesLoop = True
             else:
                 categoriesLoop = False
-
-# Need to have a loop for each of the categories so that they can keep inputting costs if they please.
-# Need to input the cateogry into the function to then take it to the correct one.
-
-
-def printTotal(dictionary):
-    for x, y in dictionary.items():
-        print(str(x.title()) + ": £" + str(y))
-    print("Total household bills: £" + str(totalCost(dictionary)))
-    print("""
-    """)
-
 
 print("Would you like to see the breakdown of your expenses?")
 breakdownDecision = input()
@@ -156,35 +160,38 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     """)
     print("Income: £" + str(monthlyIncome))
     print("""     
-    
     -----Household bills-----
     """)
-    printTotal(basicBills)
+    listCategoryBills(householdBills)
 
     print("""     
-    
     -----Non essential bills-----
     """)
-    printTotal(nonEssentials)
+    listCategoryBills(nonEssentials)
 
     print("""     
-
     -----Travel bills-----
     """)
-    printTotal(travelBills)
+    listCategoryBills(travelBills)
 
+    print("""     
+    -----Annual bills-----
+    """)
+    for x, y in annualBills.items():
+        print(str(x.title()) + ": £" + str(y))
+    yearlyCost = categoryCost(annualBills)
+    monthlyAnnualBillsPayment = round((yearlyCost / 12), 2)
+    print("Total yearly bills: £" + str(yearlyCost))
+    print("Monthly cost: £" + str(monthlyAnnualBillsPayment))
+    print("")
+    print("----------------------------")
 
-    print("Total monthly costs: £" + str(totalCost(basicBills)))
-    print("Disposable monthly income: £" + str(monthlyIncome - totalCost(basicBills)))
+    print("Total monthly bills: £" + str(totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)))
+    disposableMonthlyIncome = monthlyIncome - (totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)) 
+    print("Disposable monthly income: £" + str(round(disposableMonthlyIncome, 2)))
     print("")
     print("*****************************************")
+    print("")
 
 else:
     print("Thanks for stopping by!")
-
-
-
-# Need a expenses dictionary. One can be neccessities and the other can be non-n
-# Add to each dictionary using a loop asking if they would like to add another in a while loop
-
-# Put them in separate lists and then use indexing to match them up in a loop
