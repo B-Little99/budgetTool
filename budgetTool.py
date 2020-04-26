@@ -153,6 +153,11 @@ while categoriesLoop == True:
 print("Would you like to see the breakdown of your expenses?")
 breakdownDecision = input()
 
+yearlyCost = categoryCost(annualBills)
+monthlyAnnualBillsPayment = round((yearlyCost / 12), 2)
+totalCostsPCM = totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)
+disposableMonthlyIncome = monthlyIncome - totalCostsPCM
+
 if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("""*************************************
     MONTHLY BUDGET BREAKDOWN    
@@ -179,19 +184,30 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     """)
     for x, y in annualBills.items():
         print(str(x.title()) + ": £" + str(y))
-    yearlyCost = categoryCost(annualBills)
-    monthlyAnnualBillsPayment = round((yearlyCost / 12), 2)
     print("Total yearly bills: £" + str(yearlyCost))
     print("Monthly cost: £" + str(monthlyAnnualBillsPayment))
     print("")
     print("----------------------------")
-
-    print("Total monthly bills: £" + str(totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)))
-    disposableMonthlyIncome = monthlyIncome - (totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)) 
+    print("Total monthly bills: £" + str(totalCostsPCM))
     print("Disposable monthly income: £" + str(round(disposableMonthlyIncome, 2)))
     print("")
     print("*****************************************")
     print("")
+    print("Would you like some advice based on your disposable income?")
+    userAdviceDecision = input()
+    if userAdviceDecision.lower() == "y" or userAdviceDecision == "yes":
+        if disposableMonthlyIncome > 500:
+            print("You have a high disposable income each month and likely have a well paying job or budget well, congratulations! \nThat is a lot of money and it is worth creating an emergency fund or hiring a financial advisor to discuss investing.")
+        elif disposableMonthlyIncome <= 500:
+            print("You have a decent amount of disposable income. Considering the amount of extra cash you have you should set up an emergency fund for 6 - 9 months expenses. \nIf you already have this in place then it it might be worth researching how you can invest your money.")
+        elif disposableMonthlyIncome <= 300:
+            print("You have disposable income. You might want to consider setting up an emergency fund for  a rainy day!")
+        elif disposableMonthlyIncome >= 50 and disposableMonthlyIncome <= 100:
+            print("After all your expenses you are low on cash. It is worth putting a strong budget system in place to monitor and improve your situation.")
+        else:
+            print("You have seriously low money after your monthly expenses. You should cut back and create a strong budget. If you do not have an emergency fund then one big expense could seriously hurt you financially.")
+    else:
+        print("Thanks for stopping by! I hope you found this useful!")
 
 else:
     print("Thanks for stopping by!")
