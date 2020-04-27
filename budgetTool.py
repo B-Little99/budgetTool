@@ -51,6 +51,14 @@ def totalCost(dict1, dict2, dict3, monthlyAnnualCost):
     totalValue = categoryCost(dict1) + categoryCost(dict2) + categoryCost(dict3) + monthlyAnnualCost
     return totalValue
 
+def listCategoryBills(dictionary):
+    for x, y in dictionary.items():
+        print(str(x.title()) + ": £" + str(y))
+    print("")
+    print("Total: £" + str(categoryCost(dictionary)))
+    print("")
+
+
 print("Welcome to this simple monthly budget tool! Let's start with your monthly post-tax income:")
 monthlyIncome = int(input())
 print("There are several basic 'bills' we want to include by default. If you do not pay anything for these bills, leave them blank.")
@@ -87,14 +95,7 @@ if userInput == "yes" or userInput == "y":
 else:
     categoriesLoop = False
 
-def listCategoryBills(dictionary):
-    for x, y in dictionary.items():
-        print(str(x.title()) + ": £" + str(y))
-    print("Total : £" + str(categoryCost(dictionary)))
-    print("")
-
-yearlyMonthlyStatement = "per month!"
-
+yearlyMonthlyStatement = " per month!"
 
 while categoriesLoop == True:
     categoryLoop = True
@@ -102,7 +103,7 @@ while categoriesLoop == True:
     print("Please enter a category to continue: household bills, non-essential bills, travel bills, and annual bills.")
     categoryDecision = input()
 
-# If statement to convert cateogry decision to correct input.
+    # If statement to convert cateogry decision to correct text which is used in statements.
     if categoryDecision.lower() == "non-essential bills" or categoryDecision.lower() == "non-essential"     or categoryDecision.lower() == "non essential" or categoryDecision.lower() == "non essential bills":
         categoryDecision = nonEssentials
         categoryText = "non-essential"
@@ -113,25 +114,29 @@ while categoriesLoop == True:
         categoryDecision = annualBills
         categoryText = "annual"
         yearlyMonthlyStatement = " per year!"
-    elif categoryDecision.lower() == "household bills" or categoryDecision.lower() == "household"                 or categoryDecision.lower() == "household-bills":
+    elif categoryDecision.lower() == "household bills" or categoryDecision.lower() == "household" or categoryDecision.lower() == "household-bills":
         categoryDecision = householdBills
         categoryText = "household"
     else:
         categoryLoop = False
         categoriesLoop = False
 
-# May need another loop here for individual cats
-    # if categoryDecision != "":
     while categoryLoop == True:
-        print("Please write out one of the " + str(categoryText) + " bills you would like to update: " + stringBills(categoryDecision) + ".")
+        print("Please write out one of the " + str(categoryText) + " bills you would like to update: " + stringBills(categoryDecision) + " or write a new bill if it is not listed.")
         categoryKey = input()
         if categoryKey.lower() in categoryDecision:
             print("Please input the cost of your " + str(categoryKey.lower()) + " in GBP:")
             costValue = input()  
         else: 
-            print("Oops! It looks like what you entered is not on the list!")
-            categoryLoop = False
-            break
+            print("Oops! It looks like what you entered is not on the list! \nWould you like to add " + str(categoryKey) + " to" + str(categoryText) + "?")
+            addUserBill = input()
+            if addUserBill.lower() == "yes" or addUserBill.lower() == "y":
+                print("Great, let's get that added. Please input the cost of your " + str(categoryKey.lower()) + " in GBP: ")
+                costValue = input()
+            else:
+                print("Okay, not a problem.")
+            # categoryLoop = False
+            # break
 
         categoryDecision[categoryKey.lower()] = costValue
 
@@ -143,7 +148,7 @@ while categoriesLoop == True:
             categoryLoop = True
         else:
             categoryLoop = False
-            print("Please enter 'Yes' if you like to enter costs from a different category:")
+            print("Please enter 'Yes' if you like to enter costs from a different category.")
             userInput = input()
             if userInput.lower() == "yes" or userInput.lower() == "y":
                 categoriesLoop = True
@@ -161,7 +166,6 @@ disposableMonthlyIncome = monthlyIncome - totalCostsPCM
 if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("""*************************************
     MONTHLY BUDGET BREAKDOWN    
-
     """)
     print("Income: £" + str(monthlyIncome))
     print("""     
@@ -196,16 +200,20 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("Would you like some advice based on your disposable income?")
     userAdviceDecision = input()
     if userAdviceDecision.lower() == "y" or userAdviceDecision == "yes":
-        if disposableMonthlyIncome > 500:
+        if str(disposableMonthlyIncome).find("-") != -1:
+            print("You have a negative disposable income! This means that you are spending more than you make each month. You have to get this under control. \nPlease seek help if you are in a significant amount of debt.")
+        elif disposableMonthlyIncome > 500:
             print("You have a high disposable income each month and likely have a well paying job or budget well, congratulations! \nThat is a lot of money and it is worth creating an emergency fund or hiring a financial advisor to discuss investing.")
-        elif disposableMonthlyIncome <= 500:
+        elif disposableMonthlyIncome > 300 and disposableMonthlyIncome <= 500:
             print("You have a decent amount of disposable income. Considering the amount of extra cash you have you should set up an emergency fund for 6 - 9 months expenses. \nIf you already have this in place then it it might be worth researching how you can invest your money.")
-        elif disposableMonthlyIncome <= 300:
+        elif disposableMonthlyIncome > 100 and disposableMonthlyIncome <= 300:
             print("You have disposable income. You might want to consider setting up an emergency fund for  a rainy day!")
         elif disposableMonthlyIncome >= 50 and disposableMonthlyIncome <= 100:
             print("After all your expenses you are low on cash. It is worth putting a strong budget system in place to monitor and improve your situation.")
+        elif disposableMonthlyIncome >= 0 or disposableMonthlyIncome >= 0.0 and disposableMonthlyIncome < 50:
+            print("You have seriously low (or no) money after your monthly expenses. You should cut back and create a strong budget. If you do not have an emergency fund then one big expense could seriously hurt you financially.")
         else:
-            print("You have seriously low money after your monthly expenses. You should cut back and create a strong budget. If you do not have an emergency fund then one big expense could seriously hurt you financially.")
+            print("")
     else:
         print("Thanks for stopping by! I hope you found this useful!")
 
