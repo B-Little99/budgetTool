@@ -1,3 +1,4 @@
+# Different dictionaries for different types of bill categories:
 householdBills = {
     "rent": 0,
     "mortgage": 0,
@@ -33,11 +34,25 @@ annualBills = {
     "tv license": 0,
 }
 
+# This function is used to list all the dictionaries keys to show the user each bill dictionary and it's various bills
 def stringBills(dictionary):
     separator = ", "
     stringDictionaryBills = separator.join(dictionary)
     return str(stringDictionaryBills)
 
+
+# The comma function is used to provide better readability to users. 
+def comma(number):
+
+    if isinstance(number, str) == True:
+        number = int(number)
+        x = '{:,}'.format(number)
+        return x
+    else:
+        x = '{:,}'.format(number)
+        return x
+
+# Function that totals the cost of the dictionary by looping through the dictionary, determining if it is an Int or Float and then adding it.
 def categoryCost(billDict):
     cost = 0 
     for x in billDict:
@@ -49,18 +64,22 @@ def categoryCost(billDict):
 
 def totalCost(dict1, dict2, dict3, monthlyAnnualCost):
     totalValue = categoryCost(dict1) + categoryCost(dict2) + categoryCost(dict3) + monthlyAnnualCost
+    # totalValue = comma(totalValue)
     return totalValue
 
 def listCategoryBills(dictionary):
     for x, y in dictionary.items():
-        print(str(x.title()) + ": £" + str(y))
-    print("")
-    print("Total: £" + str(categoryCost(dictionary)))
+        print(str(x.title()) + ": £" + str(comma(y)))
+    print("Total: £" + str(comma(categoryCost(dictionary))))
     print("")
 
 
 print("Welcome to this simple monthly budget tool! Let's start with your monthly post-tax income:")
-monthlyIncome = int(input())
+monthlyIncome = input()
+if isinstance(monthlyIncome, int) == True:
+    monthlyIncome = int(monthlyIncome)
+else:
+    monthlyIncome = round(float(monthlyIncome), 2)
 print("There are several basic 'bills' we want to include by default. If you do not pay anything for these bills, leave them blank.")
 
 loop = True
@@ -77,7 +96,7 @@ while loop == True:
         break
 
     householdBills[billKey.lower()] = billCost
-    print("Now your " + str(billKey.lower()) + " costs £" + str(billCost) + " per month!")
+    print("Now your " + str(billKey.lower()) + " costs £" + str(comma(billCost)) + " per month!")
 
     print("Would you like to add another cost? Yes or no.")
     userDecision = input()
@@ -127,20 +146,18 @@ while categoriesLoop == True:
         if categoryKey.lower() in categoryDecision:
             print("Please input the cost of your " + str(categoryKey.lower()) + " in GBP:")
             costValue = input()  
+            categoryDecision[categoryKey.lower()] = costValue
+            print("Now your " + str(categoryKey.lower()) + " bills are £" + str(comma(costValue)) + str(yearlyMonthlyStatement))
         else: 
-            print("Oops! It looks like what you entered is not on the list! \nWould you like to add " + str(categoryKey) + " to" + str(categoryText) + "?")
+            print("Oops! It looks like what you entered is not on the list! \nWould you like to add " + str(categoryKey) + " to " + str(categoryText) + " bills?")
             addUserBill = input()
             if addUserBill.lower() == "yes" or addUserBill.lower() == "y":
                 print("Great, let's get that added. Please input the cost of your " + str(categoryKey.lower()) + " in GBP: ")
                 costValue = input()
+                categoryDecision[categoryKey.lower()] = costValue
+                print("Now your " + str(categoryKey.lower()) + " bills are £" + str(comma(costValue)) + str(yearlyMonthlyStatement))
             else:
                 print("Okay, not a problem.")
-            # categoryLoop = False
-            # break
-
-        categoryDecision[categoryKey.lower()] = costValue
-
-        print("Now your " + str(categoryKey.lower()) + " bills are £" + str(costValue) + str(yearlyMonthlyStatement))
 
         print("Would you like to add another cost in " + str(categoryText) + " bills? Yes or no.")
         userDecision = input()
@@ -167,7 +184,7 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("""*************************************
     MONTHLY BUDGET BREAKDOWN    
     """)
-    print("Income: £" + str(monthlyIncome))
+    print("Income: £" + str(comma(monthlyIncome)))
     print("""     
     -----Household bills-----
     """)
@@ -187,13 +204,13 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     -----Annual bills-----
     """)
     for x, y in annualBills.items():
-        print(str(x.title()) + ": £" + str(y))
-    print("Total yearly bills: £" + str(yearlyCost))
-    print("Monthly cost: £" + str(monthlyAnnualBillsPayment))
+        print(str(x.title()) + ": £" + str(comma(y)))
+    print("Total yearly bills: £" + str(comma(yearlyCost)))
+    print("Monthly cost: £" + str(comma(monthlyAnnualBillsPayment)))
     print("")
     print("----------------------------")
-    print("Total monthly bills: £" + str(totalCostsPCM))
-    print("Disposable monthly income: £" + str(round(disposableMonthlyIncome, 2)))
+    print("Total monthly bills: £" + str(comma(totalCostsPCM)))
+    print("Disposable monthly income: £" + str(comma(round(disposableMonthlyIncome, 2))))
     print("")
     print("*****************************************")
     print("")
