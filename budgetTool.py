@@ -43,11 +43,15 @@ def stringBills(dictionary):
 
 # The comma function is used to provide better readability to users. 
 def comma(number):
-
     if isinstance(number, str) == True:
-        number = int(number)
-        x = '{:,}'.format(number)
-        return x
+        if '.' in number:
+            number = float(number)
+            x = '{:,}'.format(number)
+            return x
+        else:
+            number = int(number)
+            x = '{:,}'.format(number)
+            return x
     else:
         x = '{:,}'.format(number)
         return x
@@ -62,11 +66,13 @@ def categoryCost(billDict):
             cost += float(billDict[x])
     return cost
 
+# This function returns the total cost of the different categories.
 def totalCost(dict1, dict2, dict3, monthlyAnnualCost):
     totalValue = categoryCost(dict1) + categoryCost(dict2) + categoryCost(dict3) + monthlyAnnualCost
     # totalValue = comma(totalValue)
     return totalValue
 
+# This is used in the budget breakdown section and will lust the key and value in the dictionaries.
 def listCategoryBills(dictionary):
     for x, y in dictionary.items():
         print(str(x.title()) + ": £" + str(comma(y)))
@@ -76,6 +82,7 @@ def listCategoryBills(dictionary):
 
 print("Welcome to this simple monthly budget tool! Let's start with your monthly post-tax income:")
 monthlyIncome = input()
+# The below if else statement enables the user to input either a float or int without error.
 if isinstance(monthlyIncome, int) == True:
     monthlyIncome = int(monthlyIncome)
 else:
@@ -84,6 +91,7 @@ print("There are several basic 'bills' we want to include by default. If you do 
 
 loop = True
 
+# This loop is used separate from the other categories because I didn't want users to add anything to the household bills category.
 while loop == True:
     print("Please write out one of the bills you would like to update from one of the following: " + stringBills(householdBills) + ".")
     billKey = input()
@@ -107,22 +115,15 @@ while loop == True:
 
 categoriesLoop = True
 
-print("Would you like to add expenses in other categories?")
-userInput = input()
-if userInput == "yes" or userInput == "y":
-    categoriesLoop = True
-else:
-    categoriesLoop = False
-
 yearlyMonthlyStatement = " per month!"
 
 while categoriesLoop == True:
     categoryLoop = True
 
-    print("Please enter a category to continue: household bills, non-essential bills, travel bills, and annual bills.")
+    print("Please enter a category to continue: household bills, non-essential bills, travel bills, and annual bills. If you want to see a breakdown of bills, hit enter.")
     categoryDecision = input()
 
-    # If statement to convert cateogry decision to correct text which is used in statements.
+    # If statement to convert cateogry decision to correct text which is used in statements and enables the user to type different variations of the categories.
     if categoryDecision.lower() == "non-essential bills" or categoryDecision.lower() == "non-essential"     or categoryDecision.lower() == "non essential" or categoryDecision.lower() == "non essential bills":
         categoryDecision = nonEssentials
         categoryText = "non-essential"
@@ -139,7 +140,7 @@ while categoriesLoop == True:
     else:
         categoryLoop = False
         categoriesLoop = False
-
+    # The below loop will continue to provide the user to update their bills in a specific category as long as the category loop is true
     while categoryLoop == True:
         print("Please write out one of the " + str(categoryText) + " bills you would like to update: " + stringBills(categoryDecision) + " or write a new bill if it is not listed.")
         categoryKey = input()
@@ -175,11 +176,13 @@ while categoriesLoop == True:
 print("Would you like to see the breakdown of your expenses?")
 breakdownDecision = input()
 
+# Calculations used for the breakdown budget
 yearlyCost = categoryCost(annualBills)
 monthlyAnnualBillsPayment = round((yearlyCost / 12), 2)
 totalCostsPCM = totalCost(householdBills, travelBills, nonEssentials, monthlyAnnualBillsPayment)
 disposableMonthlyIncome = monthlyIncome - totalCostsPCM
 
+# This prints out the breakdown for the user
 if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("""*************************************
     MONTHLY BUDGET BREAKDOWN    
@@ -214,6 +217,7 @@ if breakdownDecision.lower() == "yes" or breakdownDecision.lower() == "y":
     print("")
     print("*****************************************")
     print("")
+    # This provides users with some advice based on their disposable income if they decide they want it.
     print("Would you like some advice based on your disposable income?")
     userAdviceDecision = input()
     if userAdviceDecision.lower() == "y" or userAdviceDecision == "yes":
