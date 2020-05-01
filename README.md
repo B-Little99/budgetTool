@@ -1,4 +1,4 @@
-**Overview** 
+# Overview
 This programme is meant to help people create a budget and see where their cashflow goes each month. There is different categories of bills to reflect the different purchases of a consumer such as household bills, annual bills, travel bills and non-essential bills.
 
 The program is meant to provide flexibility for the users. To do this I ensured that users have the option to add bills that are not specifically stated in the bill categories and the programme enables users to input floats or ints.
